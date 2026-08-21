@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudySpace – Flashcard & Ghi chú</title>
+<title>StudySpace – Flashcard & Ghi chú & Chi tiêu</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,137 +16,165 @@
   }
   body { background: var(--bg); color: var(--text); font-family: var(--font-main); min-height: 100vh; display: flex; flex-direction: column; }
 
-  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; gap: 6px; height: 54px; position: sticky; top: 0; z-index: 100; }
-  .nav-logo { font-weight: 700; font-size: 16px; color: var(--accent); margin-right: auto; }
-  .nav-tab { background: none; border: none; color: var(--text-muted); font-family: var(--font-main); font-size: 13px; font-weight: 500; padding: 7px 14px; border-radius: 8px; cursor: pointer; transition: all .2s; }
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; display: flex; align-items: center; gap: 4px; height: 54px; position: sticky; top: 0; z-index: 100; flex-wrap: nowrap; overflow-x: auto; }
+  .nav-logo { font-weight: 700; font-size: 15px; color: var(--accent); margin-right: auto; white-space: nowrap; }
+  .nav-tab { background: none; border: none; color: var(--text-muted); font-family: var(--font-main); font-size: 13px; font-weight: 500; padding: 7px 12px; border-radius: 8px; cursor: pointer; transition: all .2s; white-space: nowrap; }
   .nav-tab:hover { color: var(--text); background: var(--surface2); }
   .nav-tab.active { color: var(--accent); background: rgba(108,142,245,.12); }
 
-  .page { display: none; flex: 1; padding: 24px 16px; max-width: 720px; margin: 0 auto; width: 100%; }
+  .page { display: none; flex: 1; padding: 22px 16px; max-width: 720px; margin: 0 auto; width: 100%; }
   .page.active { display: block; }
 
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
-  .section-title { font-size: 19px; font-weight: 700; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+  .section-title { font-size: 18px; font-weight: 700; }
 
-  .btn { border: none; border-radius: 10px; font-family: var(--font-main); font-weight: 600; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
-  .btn-primary { background: var(--accent); color: #fff; padding: 9px 16px; font-size: 13px; }
+  .btn { border: none; border-radius: 10px; font-family: var(--font-main); font-weight: 600; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 5px; }
+  .btn-primary { background: var(--accent); color: #fff; padding: 9px 15px; font-size: 13px; }
   .btn-primary:hover { background: #5a7ef0; transform: translateY(-1px); }
-  .btn-ghost { background: var(--surface2); color: var(--text); padding: 8px 14px; font-size: 13px; }
+  .btn-ghost { background: var(--surface2); color: var(--text); padding: 8px 13px; font-size: 13px; }
   .btn-ghost:hover { background: var(--border); }
-  .btn-danger { background: rgba(248,113,113,.15); color: var(--danger); padding: 7px 12px; font-size: 13px; }
-  .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; border-radius: 8px; transition: all .15s; font-size: 15px; }
+  .btn-danger { background: rgba(248,113,113,.15); color: var(--danger); padding: 7px 12px; font-size: 13px; border-radius: 10px; border: none; font-family: var(--font-main); font-weight: 600; cursor: pointer; }
+  .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 5px; border-radius: 8px; transition: all .15s; font-size: 15px; }
   .btn-icon:hover { color: var(--text); background: var(--surface2); }
 
-  input, textarea, select { background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; color: var(--text); font-family: var(--font-main); font-size: 14px; padding: 10px 14px; width: 100%; outline: none; transition: border-color .2s; resize: vertical; }
+  input, textarea, select { background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; color: var(--text); font-family: var(--font-main); font-size: 14px; padding: 10px 13px; width: 100%; outline: none; transition: border-color .2s; resize: vertical; }
   input:focus, textarea:focus, select:focus { border-color: var(--accent); }
   input::placeholder, textarea::placeholder { color: var(--text-muted); }
-  label { font-size: 13px; font-weight: 500; color: var(--text-muted); display: block; margin-bottom: 6px; }
-  .field { margin-bottom: 13px; }
+  label { font-size: 12px; font-weight: 500; color: var(--text-muted); display: block; margin-bottom: 5px; }
+  .field { margin-bottom: 12px; }
 
   /* MODE TABS */
-  .mode-tabs { display: flex; gap: 6px; margin-bottom: 20px; background: var(--surface); border-radius: 12px; padding: 4px; }
+  .mode-tabs { display: flex; gap: 5px; margin-bottom: 18px; background: var(--surface); border-radius: 12px; padding: 4px; }
   .mode-tab { flex: 1; border: none; background: none; color: var(--text-muted); font-family: var(--font-main); font-size: 13px; font-weight: 600; padding: 8px; border-radius: 9px; cursor: pointer; transition: all .2s; }
   .mode-tab.active { background: var(--accent); color: #fff; }
 
-  /* DECK GRID */
-  .deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
-  .deck-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: all .2s; position: relative; }
+  /* DECK */
+  .deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 9px; margin-bottom: 18px; }
+  .deck-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 13px; cursor: pointer; transition: all .2s; position: relative; }
   .deck-card:hover { border-color: var(--accent); transform: translateY(-2px); }
   .deck-card.selected { border-color: var(--accent); background: rgba(108,142,245,.08); }
-  .deck-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-  .deck-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; }
+  .deck-name { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .deck-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 7px; }
   .lang-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; }
   .lang-jp { background: rgba(167,139,250,.2); color: var(--accent2); }
   .lang-en { background: rgba(108,142,245,.2); color: var(--accent); }
-  .deck-delete { position: absolute; top: 8px; right: 8px; opacity: 0; transition: opacity .15s; }
+  .deck-delete { position: absolute; top: 7px; right: 7px; opacity: 0; transition: opacity .15s; }
   .deck-card:hover .deck-delete { opacity: 1; }
 
   /* STATS */
-  .stats-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
-  .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; flex: 1; min-width: 70px; text-align: center; }
-  .stat-num { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .stats-row { display: flex; gap: 7px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 9px 13px; flex: 1; min-width: 65px; text-align: center; }
+  .stat-num { font-size: 19px; font-weight: 700; color: var(--accent); }
   .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
   /* FLASHCARD */
-  .study-area { text-align: center; padding: 8px 0 20px; }
-  .progress-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-align: right; }
-  .progress-bar-wrap { background: var(--surface2); border-radius: 99px; height: 4px; margin-bottom: 18px; overflow: hidden; }
+  .study-area { text-align: center; padding: 6px 0 18px; }
+  .progress-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; text-align: right; }
+  .progress-bar-wrap { background: var(--surface2); border-radius: 99px; height: 4px; margin-bottom: 16px; overflow: hidden; }
   .progress-bar-fill { background: var(--accent); height: 100%; border-radius: 99px; transition: width .4s; }
-
-  .flip-wrap { perspective: 900px; width: 100%; max-width: 380px; height: 200px; margin: 0 auto 20px; cursor: pointer; }
+  .flip-wrap { perspective: 900px; width: 100%; max-width: 360px; height: 190px; margin: 0 auto 18px; cursor: pointer; }
   .flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.4,0,.2,1); }
   .flip-inner.flipped { transform: rotateY(180deg); }
-  .flip-face { position: absolute; inset: 0; background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+  .flip-face { position: absolute; inset: 0; background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px; }
   .flip-face.back { transform: rotateY(180deg); background: var(--surface2); border-color: var(--accent); }
   .flip-hint { font-size: 11px; color: var(--text-muted); position: absolute; bottom: 10px; }
-  .card-word { font-size: 34px; font-weight: 700; }
+  .card-word { font-size: 32px; font-weight: 700; }
   .card-word.jp { font-family: var(--font-jp); }
-  .card-reading { font-family: var(--font-jp); font-size: 14px; color: var(--accent2); margin-top: 6px; }
-  .card-meaning { font-size: 20px; font-weight: 600; }
-  .card-example { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+  .card-reading { font-family: var(--font-jp); font-size: 13px; color: var(--accent2); margin-top: 5px; }
+  .card-meaning { font-size: 19px; font-weight: 600; }
+  .card-example { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
   .card-example.jp { font-family: var(--font-jp); }
-
   .study-actions { display: flex; gap: 10px; justify-content: center; }
-  .btn-know { background: rgba(52,211,153,.15); color: var(--success); padding: 11px 26px; font-size: 14px; border-radius: 10px; border: none; font-family: var(--font-main); font-weight: 600; cursor: pointer; }
+  .btn-know { background: rgba(52,211,153,.15); color: var(--success); padding: 11px 24px; font-size: 14px; border-radius: 10px; border: none; font-family: var(--font-main); font-weight: 600; cursor: pointer; }
   .btn-know:hover { background: rgba(52,211,153,.25); }
-  .btn-again { background: rgba(248,113,113,.15); color: var(--danger); padding: 11px 26px; font-size: 14px; border-radius: 10px; border: none; font-family: var(--font-main); font-weight: 600; cursor: pointer; }
+  .btn-again { background: rgba(248,113,113,.15); color: var(--danger); padding: 11px 24px; font-size: 14px; border-radius: 10px; border: none; font-family: var(--font-main); font-weight: 600; cursor: pointer; }
   .btn-again:hover { background: rgba(248,113,113,.25); }
 
   /* QUIZ */
-  .quiz-question-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 28px 24px; text-align: center; margin-bottom: 18px; }
-  .quiz-q-label { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .5px; }
-  .quiz-q-word { font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+  .quiz-question-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 24px; text-align: center; margin-bottom: 16px; }
+  .quiz-q-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .5px; }
+  .quiz-q-word { font-size: 30px; font-weight: 700; margin-bottom: 5px; }
   .quiz-q-word.jp { font-family: var(--font-jp); }
-  .quiz-q-reading { font-family: var(--font-jp); font-size: 14px; color: var(--accent2); }
-  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-  .quiz-opt { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 12px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; text-align: center; color: var(--text); font-family: var(--font-main); }
+  .quiz-q-reading { font-family: var(--font-jp); font-size: 13px; color: var(--accent2); }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 16px; }
+  .quiz-opt { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 11px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; text-align: center; color: var(--text); font-family: var(--font-main); }
   .quiz-opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(108,142,245,.08); }
   .quiz-opt.correct { border-color: var(--success); background: rgba(52,211,153,.15); color: var(--success); }
   .quiz-opt.wrong { border-color: var(--danger); background: rgba(248,113,113,.15); color: var(--danger); }
   .quiz-opt:disabled { cursor: default; }
-  .quiz-feedback { font-size: 14px; font-weight: 600; text-align: center; margin-bottom: 14px; min-height: 20px; }
+  .quiz-feedback { font-size: 14px; font-weight: 600; text-align: center; margin-bottom: 12px; min-height: 20px; }
   .quiz-next { display: flex; justify-content: center; }
-
-  /* RESULT */
-  .result-box { text-align: center; padding: 40px 20px; }
-  .result-score { font-size: 56px; font-weight: 700; color: var(--accent); }
-  .result-label { font-size: 16px; color: var(--text-muted); margin-top: 6px; margin-bottom: 24px; }
-  .result-stars { font-size: 32px; margin-bottom: 20px; }
+  .result-box { text-align: center; padding: 36px 20px; }
+  .result-score { font-size: 52px; font-weight: 700; color: var(--accent); }
+  .result-label { font-size: 15px; color: var(--text-muted); margin-top: 5px; margin-bottom: 22px; }
+  .result-stars { font-size: 30px; margin-bottom: 16px; }
 
   /* VOCAB LIST */
-  .vocab-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 7px; display: flex; align-items: center; gap: 10px; }
-  .vocab-item-word { font-size: 17px; font-weight: 700; min-width: 56px; }
+  .vocab-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
+  .vocab-item-word { font-size: 16px; font-weight: 700; min-width: 55px; }
   .vocab-item-word.jp { font-family: var(--font-jp); }
-  .vocab-item-reading { font-family: var(--font-jp); font-size: 12px; color: var(--accent2); }
+  .vocab-item-reading { font-family: var(--font-jp); font-size: 11px; color: var(--accent2); }
   .vocab-item-meaning { font-size: 13px; color: var(--text-muted); flex: 1; }
-  .known-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+  .known-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
   .known-dot.yes { background: var(--success); }
 
+  /* BULK */
+  .bulk-preview { margin-top: 10px; max-height: 160px; overflow-y: auto; }
+  .bulk-row { display: flex; align-items: center; gap: 7px; padding: 6px 9px; border-radius: 8px; margin-bottom: 3px; font-size: 12px; }
+  .bulk-row.ok { background: rgba(52,211,153,.08); }
+  .bulk-row.err { background: rgba(248,113,113,.08); color: var(--danger); }
+  .bulk-word { font-weight: 600; min-width: 75px; }
+  .bulk-meaning { color: var(--text-muted); flex: 1; }
+  .format-hint { background: var(--surface2); border-radius: 8px; padding: 9px 11px; font-size: 12px; color: var(--text-muted); line-height: 1.7; margin-bottom: 11px; font-family: monospace; white-space: pre; }
+
   /* NOTES */
-  .notes-layout { display: grid; grid-template-columns: 200px 1fr; gap: 14px; }
-  @media(max-width:560px) { .notes-layout { grid-template-columns: 1fr; } .quiz-options { grid-template-columns: 1fr; } }
-  .note-item { padding: 10px 12px; border-radius: 10px; cursor: pointer; transition: background .15s; border: 1px solid transparent; margin-bottom: 5px; }
+  .notes-layout { display: grid; grid-template-columns: 195px 1fr; gap: 13px; }
+  @media(max-width:540px) { .notes-layout { grid-template-columns: 1fr; } .quiz-options { grid-template-columns: 1fr; } }
+  .note-item { padding: 9px 11px; border-radius: 10px; cursor: pointer; transition: background .15s; border: 1px solid transparent; margin-bottom: 5px; }
   .note-item:hover { background: var(--surface); }
   .note-item.active { background: var(--surface); border-color: var(--accent); }
   .note-item-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .note-item-preview { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
   .note-item-date { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
-  .notes-editor { display: flex; flex-direction: column; gap: 10px; }
-  .note-title-input { font-size: 19px; font-weight: 700; background: none; border: none; border-bottom: 1.5px solid var(--border); border-radius: 0; padding: 8px 0; color: var(--text); }
+  .notes-editor { display: flex; flex-direction: column; gap: 9px; }
+  .note-title-input { font-size: 18px; font-weight: 700; background: none; border: none; border-bottom: 1.5px solid var(--border); border-radius: 0; padding: 7px 0; color: var(--text); }
   .note-title-input:focus { border-bottom-color: var(--accent); }
-  .note-body-input { min-height: 300px; line-height: 1.7; font-size: 14px; }
-  .notes-empty, .empty-study { text-align: center; padding: 50px 20px; color: var(--text-muted); }
-  .empty-study .emoji { font-size: 42px; margin-bottom: 10px; }
+  .note-body-input { min-height: 290px; line-height: 1.7; font-size: 14px; }
+  .notes-empty, .empty-study { text-align: center; padding: 44px 20px; color: var(--text-muted); }
+  .empty-study .emoji { font-size: 40px; margin-bottom: 9px; }
+
+  /* EXPENSE */
+  .budget-bar-wrap { background: var(--surface2); border-radius: 99px; height: 8px; margin: 9px 0 4px; overflow: hidden; }
+  .budget-bar-fill { height: 100%; border-radius: 99px; transition: width .5s, background .3s; }
+  .exp-summary { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
+  .exp-summary-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px; }
+  .exp-big { font-size: 26px; font-weight: 700; }
+  .exp-sublabel { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
+  .exp-remain { font-size: 13px; font-weight: 600; }
+  .exp-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
+  .exp-cat-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; background: var(--surface2); }
+  .exp-item-name { font-size: 14px; font-weight: 600; }
+  .exp-item-note { font-size: 11px; color: var(--text-muted); }
+  .exp-item-amount { font-size: 15px; font-weight: 700; color: var(--danger); margin-left: auto; flex-shrink: 0; }
+  .exp-item-time { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+  .date-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .date-nav-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 6px 13px; cursor: pointer; font-size: 15px; font-family: var(--font-main); transition: border-color .15s; }
+  .date-nav-btn:hover { border-color: var(--accent); }
+  .date-label { flex: 1; text-align: center; font-weight: 600; font-size: 14px; }
+  .cat-breakdown { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+  .cat-chip { padding: 5px 11px; border-radius: 99px; font-size: 12px; font-weight: 600; background: var(--surface); border: 1.5px solid var(--border); color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+  .cat-chip-amount { color: var(--danger); }
+  .empty-exp { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
 
   /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity .2s; padding: 16px; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 24px; width: 90%; max-width: 420px; transform: translateY(12px); transition: transform .2s; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 22px; width: 100%; max-width: 420px; transform: translateY(12px); transition: transform .2s; max-height: 90vh; overflow-y: auto; }
   .modal-overlay.open .modal { transform: translateY(0); }
-  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+  .modal-actions { display: flex; gap: 9px; justify-content: flex-end; margin-top: 16px; }
 
-  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 9px 18px; border-radius: 99px; font-size: 13px; font-weight: 500; z-index: 300; transition: transform .3s; pointer-events: none; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 9px 17px; border-radius: 99px; font-size: 13px; font-weight: 500; z-index: 300; transition: transform .3s; pointer-events: none; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   ::-webkit-scrollbar { width: 5px; }
@@ -159,26 +187,26 @@
   <span class="nav-logo">✦ StudySpace</span>
   <button class="nav-tab active" onclick="switchPage('flash',this)">Flashcard</button>
   <button class="nav-tab" onclick="switchPage('notes',this)">Ghi chú</button>
+  <button class="nav-tab" onclick="switchPage('expense',this)">Chi tiêu</button>
 </nav>
 
 <!-- ===== FLASHCARD PAGE ===== -->
 <div class="page active" id="page-flash">
-
   <div class="section-header">
     <span class="section-title">Bộ thẻ</span>
     <button class="btn btn-primary" onclick="openModal('modal-deck')">+ Tạo bộ mới</button>
   </div>
   <div class="deck-grid" id="deck-grid"></div>
 
-  <!-- DECK DETAIL -->
   <div id="deck-detail" style="display:none">
     <div class="section-header">
-      <div style="display:flex;align-items:center;gap:10px">
-        <span class="section-title" id="detail-deck-name" style="font-size:16px"></span>
+      <div style="display:flex;align-items:center;gap:9px">
+        <span class="section-title" id="detail-deck-name" style="font-size:15px"></span>
         <span id="detail-lang-badge" class="lang-badge"></span>
       </div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-primary" onclick="openAddCard()">+ Thêm thẻ</button>
+        <button class="btn btn-ghost" onclick="openBulk()">📋 Hàng loạt</button>
         <button class="btn btn-ghost" onclick="startMode('flash')">▶ Flashcard</button>
         <button class="btn btn-ghost" onclick="startMode('quiz')">📝 Trắc nghiệm</button>
       </div>
@@ -187,14 +215,11 @@
     <div id="vocab-list"></div>
   </div>
 
-  <!-- STUDY / QUIZ AREA -->
   <div id="study-wrap" style="display:none">
     <div class="section-header">
-      <span class="section-title" id="study-deck-name" style="font-size:16px"></span>
+      <span class="section-title" id="study-deck-name" style="font-size:15px"></span>
       <button class="btn btn-ghost" onclick="endStudy()">← Thoát</button>
     </div>
-
-    <!-- Mode tabs -->
     <div class="mode-tabs">
       <button class="mode-tab" id="tab-flash" onclick="switchMode('flash')">🃏 Flashcard</button>
       <button class="mode-tab" id="tab-quiz" onclick="switchMode('quiz')">📝 Trắc nghiệm</button>
@@ -205,7 +230,7 @@
       <div class="study-area">
         <div class="progress-label" id="flash-progress-label"></div>
         <div class="progress-bar-wrap"><div class="progress-bar-fill" id="flash-progress-bar" style="width:0%"></div></div>
-        <div class="flip-wrap" id="flip-wrap" onclick="flipCard()">
+        <div class="flip-wrap" onclick="flipCard()">
           <div class="flip-inner" id="flip-inner">
             <div class="flip-face front">
               <div class="card-word" id="card-front-word"></div>
@@ -228,7 +253,6 @@
 
     <!-- QUIZ MODE -->
     <div id="mode-quiz" style="display:none">
-      <!-- Question -->
       <div id="quiz-active">
         <div class="progress-label" id="quiz-progress-label"></div>
         <div class="progress-bar-wrap"><div class="progress-bar-fill" id="quiz-progress-bar" style="width:0%"></div></div>
@@ -243,13 +267,12 @@
           <button class="btn btn-primary" onclick="nextQuiz()">Tiếp theo →</button>
         </div>
       </div>
-      <!-- Result -->
       <div id="quiz-result" style="display:none">
         <div class="result-box">
           <div class="result-stars" id="result-stars"></div>
           <div class="result-score" id="result-score"></div>
           <div class="result-label" id="result-label"></div>
-          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="startMode('quiz')">🔁 Làm lại</button>
             <button class="btn btn-ghost" onclick="endStudy()">← Thoát</button>
           </div>
@@ -275,12 +298,56 @@
     <div class="notes-editor" id="notes-editor" style="display:none">
       <input class="note-title-input" id="note-title" placeholder="Tiêu đề..." oninput="saveNote()">
       <textarea class="note-body-input" id="note-body" placeholder="Nội dung ghi chú..." oninput="saveNote()"></textarea>
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn btn-danger" onclick="deleteNote()">🗑 Xóa</button>
+      <div style="display:flex;gap:7px;justify-content:flex-end">
+        <button class="btn-danger" onclick="deleteNote()">🗑 Xóa</button>
       </div>
     </div>
-    <div class="notes-empty" id="notes-empty"><div style="font-size:36px;margin-bottom:8px">📝</div><p>Chọn ghi chú hoặc tạo mới</p></div>
+    <div class="notes-empty" id="notes-empty"><div style="font-size:34px;margin-bottom:7px">📝</div><p>Chọn hoặc tạo ghi chú mới</p></div>
   </div>
+</div>
+
+<!-- ===== EXPENSE PAGE ===== -->
+<div class="page" id="page-expense">
+  <!-- Date nav -->
+  <div class="date-nav">
+    <button class="date-nav-btn" onclick="changeDay(-1)">‹</button>
+    <div class="date-label" id="exp-date-label"></div>
+    <button class="date-nav-btn" onclick="changeDay(1)">›</button>
+    <button class="btn btn-ghost" style="font-size:12px;padding:6px 10px" onclick="goToday()">Hôm nay</button>
+  </div>
+
+  <!-- Summary -->
+  <div class="exp-summary">
+    <div class="exp-summary-row">
+      <div>
+        <div class="exp-sublabel">Đã chi hôm nay</div>
+        <div class="exp-big" id="exp-total">0 ₫</div>
+      </div>
+      <div style="text-align:right">
+        <div class="exp-sublabel">Ngân sách ngày</div>
+        <div style="display:flex;align-items:center;gap:5px;justify-content:flex-end">
+          <div class="exp-remain" id="exp-remain">—</div>
+          <button class="btn-icon" onclick="openBudgetModal()" title="Đặt ngân sách">⚙️</button>
+        </div>
+      </div>
+    </div>
+    <div class="budget-bar-wrap"><div class="budget-bar-fill" id="budget-bar" style="width:0%;background:var(--success)"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">
+      <span id="exp-pct"></span>
+      <span id="exp-budget-label"></span>
+    </div>
+  </div>
+
+  <!-- Category breakdown -->
+  <div class="cat-breakdown" id="exp-cat-breakdown"></div>
+
+  <!-- List header -->
+  <div class="section-header">
+    <span style="font-size:13px;font-weight:600;color:var(--text-muted)">Khoản chi trong ngày</span>
+    <button class="btn btn-primary" onclick="openExpenseModal()">+ Thêm</button>
+  </div>
+
+  <div id="exp-list"></div>
 </div>
 
 <!-- MODALS -->
@@ -305,10 +372,10 @@
 <div class="modal-overlay" id="modal-card">
   <div class="modal">
     <div class="modal-title" id="modal-card-title">Thêm thẻ từ vựng</div>
-    <div class="field"><label id="lbl-word">Từ / Kanji</label><input id="card-word" placeholder="VD: 食べる"></div>
-    <div class="field" id="field-reading"><label>Cách đọc</label><input id="card-reading" placeholder="VD: たべる / taberu"></div>
-    <div class="field"><label id="lbl-meaning">Nghĩa tiếng Việt</label><input id="card-meaning" placeholder="VD: ăn"></div>
-    <div class="field"><label id="lbl-example">Ví dụ (tùy chọn)</label><input id="card-example" placeholder="VD: 毎日ご飯を食べる。"></div>
+    <div class="field"><label id="lbl-word">Từ</label><input id="card-word" placeholder="VD: 食べる"></div>
+    <div class="field" id="field-reading"><label>Cách đọc</label><input id="card-reading" placeholder="VD: たべる"></div>
+    <div class="field"><label>Nghĩa tiếng Việt</label><input id="card-meaning" placeholder="VD: ăn"></div>
+    <div class="field"><label>Ví dụ (tùy chọn)</label><input id="card-example" placeholder="VD: 毎日ご飯を食べる。"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modal-card')">Hủy</button>
       <button class="btn btn-primary" onclick="saveCard()">Lưu</button>
@@ -316,26 +383,104 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-bulk">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-title">📋 Nhập nhiều từ cùng lúc</div>
+    <div id="bulk-hint-jp" class="format-hint">từ | cách đọc | nghĩa | ví dụ (tùy chọn)
+食べる | たべる | ăn | 毎日食べる。
+飲む | のむ | uống</div>
+    <div id="bulk-hint-en" class="format-hint" style="display:none">từ | nghĩa | ví dụ (tùy chọn)
+accomplish | hoàn thành | She accomplished her goal.
+fluent | thành thạo</div>
+    <div class="field">
+      <label>Dán danh sách từ vào đây (mỗi dòng 1 từ, ngăn cách bằng |)</label>
+      <textarea id="bulk-input" rows="6" oninput="previewBulk()"></textarea>
+    </div>
+    <div class="bulk-preview" id="bulk-preview"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-bulk')">Hủy</button>
+      <button class="btn btn-primary" id="btn-bulk-import" onclick="importBulk()" disabled>Nhập từ</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-expense">
+  <div class="modal">
+    <div class="modal-title" id="modal-exp-title">Thêm khoản chi</div>
+    <div class="field"><label>Tên khoản chi</label><input id="exp-name" placeholder="VD: Cơm trưa, Xăng xe..."></div>
+    <div class="field"><label>Số tiền (₫)</label><input id="exp-amount" type="number" placeholder="VD: 35000" min="0"></div>
+    <div class="field">
+      <label>Danh mục</label>
+      <select id="exp-cat">
+        <option value="🍜 Ăn uống">🍜 Ăn uống</option>
+        <option value="🚗 Di chuyển">🚗 Di chuyển</option>
+        <option value="🛒 Mua sắm">🛒 Mua sắm</option>
+        <option value="📚 Học tập">📚 Học tập</option>
+        <option value="🎮 Giải trí">🎮 Giải trí</option>
+        <option value="💊 Sức khỏe">💊 Sức khỏe</option>
+        <option value="🏠 Nhà ở">🏠 Nhà ở</option>
+        <option value="💡 Khác">💡 Khác</option>
+      </select>
+    </div>
+    <div class="field"><label>Ghi chú (tùy chọn)</label><input id="exp-note" placeholder="VD: với bạn bè..."></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-expense')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveExpense()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-budget">
+  <div class="modal">
+    <div class="modal-title">⚙️ Ngân sách hàng ngày</div>
+    <div class="field"><label>Ngân sách mỗi ngày (₫)</label><input id="budget-input" type="number" placeholder="VD: 200000" min="0"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-budget')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveBudget()">Lưu</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+// ===== STORAGE =====
 const S = { get: k => JSON.parse(localStorage.getItem(k)||'null'), set: (k,v) => localStorage.setItem(k,JSON.stringify(v)) };
 
+// ===== DATA =====
 let decks = S.get('ss_decks') || [];
 let notes = S.get('ss_notes') || [];
-let activeDeckId = null;
-let editingCardId = null;
-let activeNoteId = null;
+let expenses = S.get('ss_expenses') || [];
+let budget = S.get('ss_budget') || 0;
+let activeNoteId = null, activeDeckId = null, editingCardId = null, editingExpId = null;
 let currentMode = 'flash';
+let flashQueue=[], flashIdx=0, flashKnown=0, cardFlipped=false;
+let quizQueue=[], quizIdx=0, quizScore=0, quizAnswered=false;
 
-// Flash state
-let flashQueue = [], flashIdx = 0, flashKnown = 0, cardFlipped = false;
+// Expense date
+let expDate = todayStr();
 
-// Quiz state
-let quizQueue = [], quizIdx = 0, quizScore = 0, quizAnswered = false;
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function fmtDate(str) {
+  const [y,m,d] = str.split('-');
+  const names = ['','Th1','Th2','Th3','Th4','Th5','Th6','Th7','Th8','Th9','Th10','Th11','Th12'];
+  const days = ['CN','T2','T3','T4','T5','T6','T7'];
+  const dt = new Date(y,m-1,d);
+  const today = todayStr();
+  if (str === today) return 'Hôm nay, '+d+'/'+m+'/'+y;
+  const yd = new Date(); yd.setDate(yd.getDate()-1);
+  const ydStr = yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
+  if (str === ydStr) return 'Hôm qua, '+d+'/'+m+'/'+y;
+  return days[dt.getDay()]+', '+d+'/'+m+'/'+y;
+}
+function fmtMoney(n) { return n.toLocaleString('vi-VN')+'₫'; }
 
 function saveDecks() { S.set('ss_decks', decks); }
 function saveNotes() { S.set('ss_notes', notes); }
+function saveExpenses() { S.set('ss_expenses', expenses); }
 
 // NAV
 function switchPage(p, btn) {
@@ -344,6 +489,7 @@ function switchPage(p, btn) {
   document.getElementById('page-'+p).classList.add('active');
   btn.classList.add('active');
   if (p === 'notes') renderNotesList();
+  if (p === 'expense') renderExpense();
 }
 
 // TOAST
@@ -357,7 +503,7 @@ function toast(msg) {
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-// DECK
+// ===== DECK =====
 function createDeck() {
   const name = document.getElementById('deck-name-input').value.trim();
   const lang = document.getElementById('deck-lang-input').value;
@@ -365,11 +511,9 @@ function createDeck() {
   const deck = { id: Date.now(), name, lang, cards: [] };
   decks.push(deck); saveDecks();
   document.getElementById('deck-name-input').value = '';
-  closeModal('modal-deck');
-  renderDecks(); selectDeck(deck.id);
+  closeModal('modal-deck'); renderDecks(); selectDeck(deck.id);
   toast('Đã tạo bộ thẻ "' + name + '"');
 }
-
 function deleteDeck(id, e) {
   e.stopPropagation();
   if (!confirm('Xóa bộ thẻ này?')) return;
@@ -377,17 +521,14 @@ function deleteDeck(id, e) {
   if (activeDeckId === id) { activeDeckId = null; showNoDeck(); }
   renderDecks(); toast('Đã xóa');
 }
-
 function renderDecks() {
   const grid = document.getElementById('deck-grid');
   if (!decks.length) { grid.innerHTML = '<p style="color:var(--text-muted);font-size:13px">Chưa có bộ thẻ nào. Hãy tạo mới!</p>'; return; }
   grid.innerHTML = decks.map(d => {
     const known = d.cards.filter(c=>c.known).length;
-    const langLabel = d.lang === 'jp' ? '🇯🇵 Nhật' : '🇬🇧 Anh';
-    const langClass = d.lang === 'jp' ? 'lang-jp' : 'lang-en';
     return `<div class="deck-card ${d.id===activeDeckId?'selected':''}" onclick="selectDeck(${d.id})">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
-        <span class="lang-badge ${langClass}">${langLabel}</span>
+        <span class="lang-badge ${d.lang==='jp'?'lang-jp':'lang-en'}">${d.lang==='jp'?'🇯🇵 Nhật':'🇬🇧 Anh'}</span>
         <button class="btn-icon deck-delete" onclick="deleteDeck(${d.id},event)">🗑</button>
       </div>
       <div class="deck-name">${d.name}</div>
@@ -395,17 +536,12 @@ function renderDecks() {
     </div>`;
   }).join('');
 }
-
-function selectDeck(id) {
-  activeDeckId = id; renderDecks(); renderDeckDetail();
-}
-
+function selectDeck(id) { activeDeckId = id; renderDecks(); renderDeckDetail(); }
 function showNoDeck() {
   document.getElementById('no-deck-selected').style.display='';
   document.getElementById('deck-detail').style.display='none';
   document.getElementById('study-wrap').style.display='none';
 }
-
 function renderDeckDetail() {
   const deck = decks.find(d=>d.id===activeDeckId);
   if (!deck) return showNoDeck();
@@ -415,81 +551,60 @@ function renderDeckDetail() {
   document.getElementById('detail-deck-name').textContent = deck.name;
   const badge = document.getElementById('detail-lang-badge');
   badge.textContent = deck.lang==='jp'?'🇯🇵 Nhật':'🇬🇧 Anh';
-  badge.className = 'lang-badge ' + (deck.lang==='jp'?'lang-jp':'lang-en');
-
+  badge.className = 'lang-badge '+(deck.lang==='jp'?'lang-jp':'lang-en');
   const known = deck.cards.filter(c=>c.known).length;
   document.getElementById('stats-row').innerHTML = `
     <div class="stat-chip"><div class="stat-num">${deck.cards.length}</div><div class="stat-label">Tổng thẻ</div></div>
     <div class="stat-chip"><div class="stat-num" style="color:var(--success)">${known}</div><div class="stat-label">Đã nhớ</div></div>
     <div class="stat-chip"><div class="stat-num" style="color:var(--danger)">${deck.cards.length-known}</div><div class="stat-label">Chưa nhớ</div></div>
     <div class="stat-chip"><div class="stat-num" style="color:var(--warn)">${deck.cards.length?Math.round(known/deck.cards.length*100):0}%</div><div class="stat-label">Tiến độ</div></div>`;
-
-  const list = document.getElementById('vocab-list');
-  if (!deck.cards.length) { list.innerHTML='<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px">Chưa có thẻ nào</p>'; return; }
-  const isJp = deck.lang === 'jp';
-  list.innerHTML = deck.cards.map(c=>`
-    <div class="vocab-item">
-      <div class="known-dot ${c.known?'yes':''}"></div>
-      <div style="min-width:70px">
-        <div class="vocab-item-word ${isJp?'jp':''}">${c.word}</div>
-        ${isJp&&c.reading?`<div class="vocab-item-reading">${c.reading}</div>`:''}
-      </div>
-      <div class="vocab-item-meaning">${c.meaning}${c.example?'<br><span style="font-size:11px;'+(isJp?'font-family:var(--font-jp)':'')+'">'+c.example+'</span>':''}</div>
-      <div style="display:flex;gap:3px">
-        <button class="btn-icon" onclick="editCard(${c.id})">✏️</button>
-        <button class="btn-icon" onclick="deleteCard(${c.id})">🗑</button>
-      </div>
-    </div>`).join('');
+  const isJp = deck.lang==='jp';
+  document.getElementById('vocab-list').innerHTML = !deck.cards.length
+    ? '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:18px">Chưa có thẻ nào</p>'
+    : deck.cards.map(c=>`<div class="vocab-item">
+        <div class="known-dot ${c.known?'yes':''}"></div>
+        <div style="min-width:65px"><div class="vocab-item-word ${isJp?'jp':''}">${c.word}</div>${isJp&&c.reading?`<div class="vocab-item-reading">${c.reading}</div>`:''}</div>
+        <div class="vocab-item-meaning">${c.meaning}${c.example?`<br><span style="font-size:11px;${isJp?'font-family:var(--font-jp)':''}">${c.example}</span>`:''}</div>
+        <div style="display:flex;gap:3px"><button class="btn-icon" onclick="editCard(${c.id})">✏️</button><button class="btn-icon" onclick="deleteCard(${c.id})">🗑</button></div>
+      </div>`).join('');
 }
 
-// CARD MODAL
+// CARD
 function openAddCard() {
-  const deck = decks.find(d=>d.id===activeDeckId);
+  const deck = decks.find(d=>d.id===activeDeckId); if (!deck) return;
   editingCardId = null;
   document.getElementById('modal-card-title').textContent = 'Thêm thẻ từ vựng';
   ['card-word','card-reading','card-meaning','card-example'].forEach(id=>document.getElementById(id).value='');
-  const isJp = deck && deck.lang === 'jp';
-  document.getElementById('lbl-word').textContent = isJp ? 'Từ / Kanji' : 'Từ tiếng Anh';
-  document.getElementById('lbl-meaning').textContent = 'Nghĩa tiếng Việt';
-  document.getElementById('lbl-example').textContent = 'Ví dụ câu (tùy chọn)';
-  document.getElementById('field-reading').style.display = isJp ? '' : 'none';
-  document.getElementById('card-word').placeholder = isJp ? 'VD: 食べる' : 'VD: accomplish';
-  document.getElementById('card-meaning').placeholder = isJp ? 'VD: ăn' : 'VD: hoàn thành';
-  document.getElementById('card-example').placeholder = isJp ? 'VD: 毎日ご飯を食べる。' : 'VD: She accomplished her goal.';
+  const isJp = deck.lang==='jp';
+  document.getElementById('lbl-word').textContent = isJp?'Từ / Kanji':'Từ tiếng Anh';
+  document.getElementById('field-reading').style.display = isJp?'':'none';
+  document.getElementById('card-word').placeholder = isJp?'VD: 食べる':'VD: accomplish';
+  document.getElementById('card-meaning').placeholder = isJp?'VD: ăn':'VD: hoàn thành';
+  document.getElementById('card-example').placeholder = isJp?'VD: 毎日ご飯を食べる。':'VD: She accomplished her goal.';
   openModal('modal-card');
 }
-
 function editCard(id) {
   const deck = decks.find(d=>d.id===activeDeckId);
   const card = deck.cards.find(c=>c.id===id);
   editingCardId = id;
-  const isJp = deck.lang === 'jp';
   document.getElementById('modal-card-title').textContent = 'Sửa thẻ';
   document.getElementById('card-word').value = card.word;
   document.getElementById('card-reading').value = card.reading||'';
   document.getElementById('card-meaning').value = card.meaning;
   document.getElementById('card-example').value = card.example||'';
-  document.getElementById('field-reading').style.display = isJp ? '' : 'none';
+  document.getElementById('field-reading').style.display = deck.lang==='jp'?'':'none';
   openModal('modal-card');
 }
-
 function saveCard() {
   const word = document.getElementById('card-word').value.trim();
   const meaning = document.getElementById('card-meaning').value.trim();
   if (!word||!meaning) { toast('Vui lòng nhập từ và nghĩa'); return; }
   const deck = decks.find(d=>d.id===activeDeckId);
   const data = { word, reading: document.getElementById('card-reading').value.trim(), meaning, example: document.getElementById('card-example').value.trim(), known: false };
-  if (editingCardId) {
-    const idx = deck.cards.findIndex(c=>c.id===editingCardId);
-    deck.cards[idx] = { ...deck.cards[idx], ...data };
-    toast('Đã cập nhật');
-  } else {
-    deck.cards.push({ id: Date.now(), ...data });
-    toast('Đã thêm thẻ');
-  }
+  if (editingCardId) { const idx=deck.cards.findIndex(c=>c.id===editingCardId); deck.cards[idx]={...deck.cards[idx],...data}; toast('Đã cập nhật'); }
+  else { deck.cards.push({ id: Date.now(), ...data }); toast('Đã thêm thẻ'); }
   saveDecks(); closeModal('modal-card'); renderDecks(); renderDeckDetail();
 }
-
 function deleteCard(id) {
   if (!confirm('Xóa thẻ này?')) return;
   const deck = decks.find(d=>d.id===activeDeckId);
@@ -497,206 +612,268 @@ function deleteCard(id) {
   saveDecks(); renderDecks(); renderDeckDetail(); toast('Đã xóa');
 }
 
-// ===== STUDY MODES =====
+// BULK
+function openBulk() {
+  const deck = decks.find(d=>d.id===activeDeckId); if (!deck) return;
+  const isJp = deck.lang==='jp';
+  document.getElementById('bulk-hint-jp').style.display = isJp?'':'none';
+  document.getElementById('bulk-hint-en').style.display = isJp?'none':'';
+  document.getElementById('bulk-input').value='';
+  document.getElementById('bulk-preview').innerHTML='';
+  document.getElementById('btn-bulk-import').disabled=true;
+  document.getElementById('btn-bulk-import').textContent='Nhập từ';
+  openModal('modal-bulk');
+}
+function previewBulk() {
+  const deck = decks.find(d=>d.id===activeDeckId);
+  const isJp = deck&&deck.lang==='jp';
+  const lines = document.getElementById('bulk-input').value.trim().split('\n').filter(l=>l.trim());
+  let html='', valid=0;
+  lines.forEach(line => {
+    const parts = line.split('|').map(p=>p.trim());
+    const word = parts[0];
+    const meaning = isJp?parts[2]:parts[1];
+    if (!word||!meaning) html+=`<div class="bulk-row err"><span class="bulk-word">${word||'?'}</span><span class="bulk-meaning">Thiếu nghĩa — bỏ qua</span><span>✗</span></div>`;
+    else { valid++; html+=`<div class="bulk-row ok"><span class="bulk-word">${word}</span><span class="bulk-meaning">→ ${meaning}</span><span style="color:var(--success)">✓</span></div>`; }
+  });
+  document.getElementById('bulk-preview').innerHTML=html;
+  const btn=document.getElementById('btn-bulk-import');
+  btn.disabled=valid===0; btn.textContent=valid>0?`Nhập ${valid} từ`:'Nhập từ';
+}
+function importBulk() {
+  const deck = decks.find(d=>d.id===activeDeckId);
+  const isJp = deck&&deck.lang==='jp';
+  const lines = document.getElementById('bulk-input').value.trim().split('\n').filter(l=>l.trim());
+  let count=0;
+  lines.forEach(line => {
+    const parts = line.split('|').map(p=>p.trim());
+    if (isJp) { const [word,reading,meaning,example]=parts; if(word&&meaning){deck.cards.push({id:Date.now()+Math.random(),word,reading:reading||'',meaning,example:example||'',known:false});count++;} }
+    else { const [word,meaning,example]=parts; if(word&&meaning){deck.cards.push({id:Date.now()+Math.random(),word,reading:'',meaning,example:example||'',known:false});count++;} }
+  });
+  saveDecks(); closeModal('modal-bulk'); renderDecks(); renderDeckDetail();
+  toast(`Đã nhập ${count} từ ✓`);
+}
+
+// STUDY MODES
 function startMode(mode) {
   const deck = decks.find(d=>d.id===activeDeckId);
   if (!deck||deck.cards.length<1) { toast('Thêm ít nhất 1 thẻ trước'); return; }
   if (mode==='quiz'&&deck.cards.length<4) { toast('Cần ít nhất 4 thẻ để làm trắc nghiệm'); return; }
-  currentMode = mode;
+  currentMode=mode;
   document.getElementById('deck-detail').style.display='none';
   document.getElementById('study-wrap').style.display='';
   document.getElementById('study-deck-name').textContent = deck.name;
   switchMode(mode);
 }
-
 function switchMode(mode) {
-  currentMode = mode;
-  document.getElementById('mode-flash').style.display = mode==='flash'?'':'none';
-  document.getElementById('mode-quiz').style.display = mode==='quiz'?'':'none';
-  document.getElementById('tab-flash').classList.toggle('active', mode==='flash');
-  document.getElementById('tab-quiz').classList.toggle('active', mode==='quiz');
-  if (mode==='flash') initFlash();
-  else initQuiz();
+  currentMode=mode;
+  document.getElementById('mode-flash').style.display=mode==='flash'?'':'none';
+  document.getElementById('mode-quiz').style.display=mode==='quiz'?'':'none';
+  document.getElementById('tab-flash').classList.toggle('active',mode==='flash');
+  document.getElementById('tab-quiz').classList.toggle('active',mode==='quiz');
+  if (mode==='flash') initFlash(); else initQuiz();
 }
-
 function endStudy() {
   document.getElementById('study-wrap').style.display='none';
   document.getElementById('deck-detail').style.display='';
   renderDeckDetail(); renderDecks();
 }
 
-// ===== FLASHCARD =====
+// FLASHCARD
 function initFlash() {
-  const deck = decks.find(d=>d.id===activeDeckId);
-  flashQueue = [...deck.cards].sort(()=>Math.random()-.5);
-  flashIdx = 0; flashKnown = 0;
-  showFlashCard();
+  const deck=decks.find(d=>d.id===activeDeckId);
+  flashQueue=[...deck.cards].sort(()=>Math.random()-.5); flashIdx=0; flashKnown=0; showFlashCard();
 }
-
 function showFlashCard() {
-  if (flashIdx >= flashQueue.length) { endStudy(); toast(`Xong! ${flashKnown}/${flashQueue.length} đã nhớ 🎉`); return; }
-  const c = flashQueue[flashIdx];
-  const deck = decks.find(d=>d.id===activeDeckId);
-  const isJp = deck.lang === 'jp';
-  cardFlipped = false;
+  if (flashIdx>=flashQueue.length) { endStudy(); toast(`Xong! ${flashKnown}/${flashQueue.length} đã nhớ 🎉`); return; }
+  const c=flashQueue[flashIdx];
+  const isJp=decks.find(d=>d.id===activeDeckId)?.lang==='jp';
+  cardFlipped=false;
   document.getElementById('flip-inner').classList.remove('flipped');
-  const wordEl = document.getElementById('card-front-word');
-  wordEl.textContent = c.word;
-  wordEl.className = 'card-word' + (isJp?' jp':'');
-  document.getElementById('card-front-reading').textContent = isJp ? (c.reading||'') : '';
-  document.getElementById('card-back-meaning').textContent = c.meaning;
-  const exEl = document.getElementById('card-back-example');
-  exEl.textContent = c.example||'';
-  exEl.className = 'card-example' + (isJp?' jp':'');
+  const wEl=document.getElementById('card-front-word'); wEl.textContent=c.word; wEl.className='card-word'+(isJp?' jp':'');
+  document.getElementById('card-front-reading').textContent=isJp?(c.reading||'):'';
+  document.getElementById('card-back-meaning').textContent=c.meaning;
+  const eEl=document.getElementById('card-back-example'); eEl.textContent=c.example||''; eEl.className='card-example'+(isJp?' jp':'');
   document.getElementById('flash-actions').style.display='none';
-  const pct = Math.round(flashIdx/flashQueue.length*100);
-  document.getElementById('flash-progress-bar').style.width = pct+'%';
-  document.getElementById('flash-progress-label').textContent = flashIdx+' / '+flashQueue.length;
+  const pct=Math.round(flashIdx/flashQueue.length*100);
+  document.getElementById('flash-progress-bar').style.width=pct+'%';
+  document.getElementById('flash-progress-label').textContent=flashIdx+' / '+flashQueue.length;
 }
-
 function flipCard() {
-  if (cardFlipped) return;
-  cardFlipped = true;
+  if (cardFlipped) return; cardFlipped=true;
   document.getElementById('flip-inner').classList.add('flipped');
   document.getElementById('flash-actions').style.display='flex';
 }
-
 function answerFlash(known) {
-  const deck = decks.find(d=>d.id===activeDeckId);
-  const card = deck.cards.find(c=>c.id===flashQueue[flashIdx].id);
-  if (card) card.known = known;
-  if (known) flashKnown++;
+  const deck=decks.find(d=>d.id===activeDeckId);
+  const card=deck.cards.find(c=>c.id===flashQueue[flashIdx].id);
+  if (card) card.known=known; if (known) flashKnown++;
   saveDecks(); flashIdx++; showFlashCard();
 }
 
-// ===== QUIZ =====
+// QUIZ
 function initQuiz() {
-  const deck = decks.find(d=>d.id===activeDeckId);
-  quizQueue = [...deck.cards].sort(()=>Math.random()-.5);
-  quizIdx = 0; quizScore = 0;
+  const deck=decks.find(d=>d.id===activeDeckId);
+  quizQueue=[...deck.cards].sort(()=>Math.random()-.5); quizIdx=0; quizScore=0;
   document.getElementById('quiz-active').style.display='';
   document.getElementById('quiz-result').style.display='none';
   showQuizQuestion();
 }
-
 function showQuizQuestion() {
-  if (quizIdx >= quizQueue.length) { showQuizResult(); return; }
-  const deck = decks.find(d=>d.id===activeDeckId);
-  const isJp = deck.lang === 'jp';
-  const c = quizQueue[quizIdx];
-  quizAnswered = false;
-
-  const wordEl = document.getElementById('quiz-word');
-  wordEl.textContent = c.word;
-  wordEl.className = 'quiz-q-word' + (isJp?' jp':'');
-  document.getElementById('quiz-reading').textContent = isJp ? (c.reading||'') : '';
-  document.getElementById('quiz-feedback').textContent = '';
-  document.getElementById('quiz-feedback').style.color = '';
+  if (quizIdx>=quizQueue.length) { showQuizResult(); return; }
+  const deck=decks.find(d=>d.id===activeDeckId);
+  const isJp=deck.lang==='jp'; const c=quizQueue[quizIdx]; quizAnswered=false;
+  const wEl=document.getElementById('quiz-word'); wEl.textContent=c.word; wEl.className='quiz-q-word'+(isJp?' jp':'');
+  document.getElementById('quiz-reading').textContent=isJp?(c.reading||'):'';
+  document.getElementById('quiz-feedback').textContent=''; document.getElementById('quiz-feedback').style.color='';
   document.getElementById('quiz-next').style.display='none';
-
-  // Build 4 options: 1 correct + 3 random wrongs
-  const others = deck.cards.filter(x=>x.id!==c.id).sort(()=>Math.random()-.5).slice(0,3);
-  const opts = [...others.map(x=>x.meaning), c.meaning].sort(()=>Math.random()-.5);
-
-  const pct = Math.round(quizIdx/quizQueue.length*100);
-  document.getElementById('quiz-progress-bar').style.width = pct+'%';
-  document.getElementById('quiz-progress-label').textContent = (quizIdx+1)+' / '+quizQueue.length;
-
-  document.getElementById('quiz-options').innerHTML = opts.map(opt=>`
-    <button class="quiz-opt" onclick="answerQuiz(this,'${opt.replace(/'/g,"\\'")}','${c.meaning.replace(/'/g,"\\'")}')">
-      ${opt}
-    </button>`).join('');
+  const others=deck.cards.filter(x=>x.id!==c.id).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[...others.map(x=>x.meaning),c.meaning].sort(()=>Math.random()-.5);
+  const pct=Math.round(quizIdx/quizQueue.length*100);
+  document.getElementById('quiz-progress-bar').style.width=pct+'%';
+  document.getElementById('quiz-progress-label').textContent=(quizIdx+1)+' / '+quizQueue.length;
+  document.getElementById('quiz-options').innerHTML=opts.map(opt=>`<button class="quiz-opt" onclick="answerQuiz(this,'${opt.replace(/'/g,"\\'")}','${c.meaning.replace(/'/g,"\\'")}')"> ${opt}</button>`).join('');
 }
-
-function answerQuiz(btn, chosen, correct) {
-  if (quizAnswered) return;
-  quizAnswered = true;
-  const opts = document.querySelectorAll('.quiz-opt');
-  opts.forEach(b => {
-    b.disabled = true;
-    if (b.textContent.trim() === correct) b.classList.add('correct');
-  });
-  const fb = document.getElementById('quiz-feedback');
-  if (chosen === correct) {
-    quizScore++;
-    btn.classList.add('correct');
-    fb.textContent = '✓ Chính xác!'; fb.style.color = 'var(--success)';
-  } else {
-    btn.classList.add('wrong');
-    fb.textContent = '✗ Sai rồi! Đáp án: ' + correct; fb.style.color = 'var(--danger)';
-  }
+function answerQuiz(btn,chosen,correct) {
+  if (quizAnswered) return; quizAnswered=true;
+  document.querySelectorAll('.quiz-opt').forEach(b=>{b.disabled=true;if(b.textContent.trim()===correct)b.classList.add('correct');});
+  const fb=document.getElementById('quiz-feedback');
+  if (chosen===correct){quizScore++;btn.classList.add('correct');fb.textContent='✓ Chính xác!';fb.style.color='var(--success)';}
+  else{btn.classList.add('wrong');fb.textContent='✗ Sai rồi! Đáp án: '+correct;fb.style.color='var(--danger)';}
   document.getElementById('quiz-next').style.display='flex';
 }
-
-function nextQuiz() {
-  quizIdx++;
-  showQuizQuestion();
-}
-
-function showQuizResult() {
+function nextQuiz(){quizIdx++;showQuizQuestion();}
+function showQuizResult(){
   document.getElementById('quiz-active').style.display='none';
   document.getElementById('quiz-result').style.display='';
-  const total = quizQueue.length;
-  const pct = Math.round(quizScore/total*100);
-  document.getElementById('result-score').textContent = quizScore + '/' + total;
-  document.getElementById('result-label').textContent = pct + '% chính xác';
-  let stars = '⭐';
-  if (pct >= 90) stars = '🏆 Xuất sắc!';
-  else if (pct >= 70) stars = '⭐⭐⭐ Rất tốt!';
-  else if (pct >= 50) stars = '⭐⭐ Khá tốt!';
-  else stars = '💪 Cố lên nhé!';
-  document.getElementById('result-stars').textContent = stars;
+  const total=quizQueue.length; const pct=Math.round(quizScore/total*100);
+  document.getElementById('result-score').textContent=quizScore+'/'+total;
+  document.getElementById('result-label').textContent=pct+'% chính xác';
+  document.getElementById('result-stars').textContent=pct>=90?'🏆 Xuất sắc!':pct>=70?'⭐⭐⭐ Rất tốt!':pct>=50?'⭐⭐ Khá tốt!':'💪 Cố lên nhé!';
 }
 
 // ===== NOTES =====
 function renderNotesList() {
-  const list = document.getElementById('notes-list');
-  if (!notes.length) {
-    list.innerHTML='<p style="color:var(--text-muted);font-size:12px;text-align:center;padding:16px">Chưa có ghi chú</p>';
-    document.getElementById('notes-empty').style.display=''; document.getElementById('notes-editor').style.display='none'; return;
-  }
-  list.innerHTML = notes.sort((a,b)=>b.updated-a.updated).map(n=>`
-    <div class="note-item ${n.id===activeNoteId?'active':''}" onclick="selectNote(${n.id})">
-      <div class="note-item-title">${n.title||'Không có tiêu đề'}</div>
-      <div class="note-item-preview">${(n.body||'').slice(0,45)}</div>
-      <div class="note-item-date">${new Date(n.updated).toLocaleDateString('vi-VN')}</div>
-    </div>`).join('');
+  const list=document.getElementById('notes-list');
+  if (!notes.length){list.innerHTML='<p style="color:var(--text-muted);font-size:12px;text-align:center;padding:14px">Chưa có ghi chú</p>';document.getElementById('notes-empty').style.display='';document.getElementById('notes-editor').style.display='none';return;}
+  list.innerHTML=notes.sort((a,b)=>b.updated-a.updated).map(n=>`<div class="note-item ${n.id===activeNoteId?'active':''}" onclick="selectNote(${n.id})"><div class="note-item-title">${n.title||'Không có tiêu đề'}</div><div class="note-item-preview">${(n.body||'').slice(0,42)}</div><div class="note-item-date">${new Date(n.updated).toLocaleDateString('vi-VN')}</div></div>`).join('');
 }
-
-function selectNote(id) {
-  activeNoteId = id;
-  const note = notes.find(n=>n.id===id);
-  document.getElementById('note-title').value = note.title||'';
-  document.getElementById('note-body').value = note.body||'';
+function selectNote(id){
+  activeNoteId=id; const note=notes.find(n=>n.id===id);
+  document.getElementById('note-title').value=note.title||'';
+  document.getElementById('note-body').value=note.body||'';
   document.getElementById('notes-editor').style.display='flex';
   document.getElementById('notes-empty').style.display='none';
   renderNotesList();
 }
+function newNote(){const note={id:Date.now(),title:'',body:'',updated:Date.now()};notes.unshift(note);saveNotes();renderNotesList();selectNote(note.id);}
+function saveNote(){const note=notes.find(n=>n.id===activeNoteId);if(!note)return;note.title=document.getElementById('note-title').value;note.body=document.getElementById('note-body').value;note.updated=Date.now();saveNotes();renderNotesList();}
+function deleteNote(){if(!confirm('Xóa ghi chú này?'))return;notes=notes.filter(n=>n.id!==activeNoteId);saveNotes();activeNoteId=null;document.getElementById('notes-editor').style.display='none';document.getElementById('notes-empty').style.display='';renderNotesList();toast('Đã xóa ghi chú');}
 
-function newNote() {
-  const note = { id: Date.now(), title:'', body:'', updated: Date.now() };
-  notes.unshift(note); saveNotes(); renderNotesList(); selectNote(note.id);
+// ===== EXPENSE =====
+function changeDay(d){
+  const dt=new Date(expDate+'T00:00:00');
+  dt.setDate(dt.getDate()+d);
+  expDate=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+  renderExpense();
+}
+function goToday(){expDate=todayStr();renderExpense();}
+
+function openBudgetModal(){
+  document.getElementById('budget-input').value=budget||'';
+  openModal('modal-budget');
+}
+function saveBudget(){
+  budget=parseInt(document.getElementById('budget-input').value)||0;
+  S.set('ss_budget',budget); closeModal('modal-budget'); renderExpense(); toast('Đã lưu ngân sách');
 }
 
-function saveNote() {
-  const note = notes.find(n=>n.id===activeNoteId);
-  if (!note) return;
-  note.title = document.getElementById('note-title').value;
-  note.body = document.getElementById('note-body').value;
-  note.updated = Date.now(); saveNotes(); renderNotesList();
+function openExpenseModal(id){
+  editingExpId=id||null;
+  if(id){
+    const exp=expenses.find(e=>e.id===id);
+    document.getElementById('modal-exp-title').textContent='Sửa khoản chi';
+    document.getElementById('exp-name').value=exp.name;
+    document.getElementById('exp-amount').value=exp.amount;
+    document.getElementById('exp-cat').value=exp.cat;
+    document.getElementById('exp-note').value=exp.note||'';
+  } else {
+    document.getElementById('modal-exp-title').textContent='Thêm khoản chi';
+    ['exp-name','exp-note'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('exp-amount').value='';
+    document.getElementById('exp-cat').value='🍜 Ăn uống';
+  }
+  openModal('modal-expense');
+}
+function saveExpense(){
+  const name=document.getElementById('exp-name').value.trim();
+  const amount=parseInt(document.getElementById('exp-amount').value)||0;
+  if(!name||!amount){toast('Vui lòng nhập tên và số tiền');return;}
+  const data={name,amount,cat:document.getElementById('exp-cat').value,note:document.getElementById('exp-note').value.trim(),date:expDate,time:new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})};
+  if(editingExpId){const idx=expenses.findIndex(e=>e.id===editingExpId);expenses[idx]={...expenses[idx],...data};toast('Đã cập nhật');}
+  else{expenses.push({id:Date.now(),...data});toast('Đã thêm khoản chi');}
+  saveExpenses(); closeModal('modal-expense'); renderExpense();
+}
+function deleteExpense(id){
+  if(!confirm('Xóa khoản chi này?'))return;
+  expenses=expenses.filter(e=>e.id!==id); saveExpenses(); renderExpense(); toast('Đã xóa');
 }
 
-function deleteNote() {
-  if (!confirm('Xóa ghi chú này?')) return;
-  notes = notes.filter(n=>n.id!==activeNoteId); saveNotes();
-  activeNoteId = null;
-  document.getElementById('notes-editor').style.display='none';
-  document.getElementById('notes-empty').style.display='';
-  renderNotesList(); toast('Đã xóa ghi chú');
+function renderExpense(){
+  document.getElementById('exp-date-label').textContent=fmtDate(expDate);
+  const dayExp=expenses.filter(e=>e.date===expDate);
+  const total=dayExp.reduce((s,e)=>s+e.amount,0);
+
+  // Summary
+  document.getElementById('exp-total').textContent=fmtMoney(total);
+  if(budget>0){
+    const remain=budget-total; const pct=Math.min(100,Math.round(total/budget*100));
+    const color=pct>=100?'var(--danger)':pct>=80?'var(--warn)':'var(--success)';
+    document.getElementById('exp-remain').textContent=(remain>=0?'Còn lại: '+fmtMoney(remain):'Vượt: '+fmtMoney(-remain));
+    document.getElementById('exp-remain').style.color=remain>=0?(pct>=80?'var(--warn)':'var(--success)'):'var(--danger)';
+    document.getElementById('budget-bar').style.width=pct+'%';
+    document.getElementById('budget-bar').style.background=color;
+    document.getElementById('exp-pct').textContent=pct+'% ngân sách';
+    document.getElementById('exp-budget-label').textContent='NS: '+fmtMoney(budget);
+  } else {
+    document.getElementById('exp-remain').textContent='Chưa đặt ngân sách';
+    document.getElementById('exp-remain').style.color='var(--text-muted)';
+    document.getElementById('budget-bar').style.width='0%';
+    document.getElementById('exp-pct').textContent='';
+    document.getElementById('exp-budget-label').textContent='';
+  }
+
+  // Category breakdown
+  const cats={};
+  dayExp.forEach(e=>{if(!cats[e.cat])cats[e.cat]=0;cats[e.cat]+=e.amount;});
+  const catEntries=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('exp-cat-breakdown').innerHTML=catEntries.length
+    ? catEntries.map(([cat,amt])=>`<div class="cat-chip"><span>${cat}</span><span class="cat-chip-amount">${fmtMoney(amt)}</span></div>`).join('')
+    : '';
+
+  // List
+  const list=document.getElementById('exp-list');
+  if(!dayExp.length){list.innerHTML='<div class="empty-exp">🎉 Chưa có khoản chi nào hôm nay</div>';return;}
+  list.innerHTML=[...dayExp].reverse().map(e=>`
+    <div class="exp-item">
+      <div class="exp-cat-icon">${e.cat.split(' ')[0]}</div>
+      <div style="flex:1">
+        <div class="exp-item-name">${e.name}</div>
+        <div class="exp-item-note">${e.cat}${e.note?' · '+e.note:''}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="exp-item-amount">${fmtMoney(e.amount)}</div>
+        <div class="exp-item-time">${e.time||''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <button class="btn-icon" onclick="openExpenseModal(${e.id})">✏️</button>
+        <button class="btn-icon" onclick="deleteExpense(${e.id})">🗑</button>
+      </div>
+    </div>`).join('');
 }
 
 // INIT
-renderDecks(); showNoDeck();
+renderDecks(); showNoDeck(); renderExpense();
 </script>
 </body>
 </html>
