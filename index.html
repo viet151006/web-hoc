@@ -166,7 +166,21 @@
   .cat-chip { padding: 5px 11px; border-radius: 99px; font-size: 12px; font-weight: 600; background: var(--surface); border: 1.5px solid var(--border); color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
   .cat-chip-amount { color: var(--danger); }
   .empty-exp { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
-  .tx-date-group { font-size: 11px; font-weight: 600; color: var(--text-muted); padding: 10px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .tx-date-group { font-size: 11px; font-weight: 600; color: var(--text-muted); padding: 10px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 4px; display: flex; align-items: center; }
+  .tx-table-header { display: grid; grid-template-columns: 1fr 100px 100px 56px; gap: 4px; padding: 7px 10px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; border-bottom: 2px solid var(--border); margin-bottom: 4px; }
+  .tx-row { display: grid; grid-template-columns: 1fr 100px 100px 56px; gap: 4px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 5px; }
+  .tx-row-income { border-color: rgba(52,211,153,.2); background: rgba(52,211,153,.03); }
+  .tx-col-desc { display: flex; align-items: center; min-width: 0; }
+  .tx-col-in, .tx-col-out { text-align: right; font-size: 14px; font-weight: 700; }
+  .tx-col-action { display: flex; gap: 2px; justify-content: flex-end; }
+  .tx-amount-in { color: var(--success); }
+  .tx-amount-out { color: var(--danger); }
+  .tx-empty { color: var(--border); font-size: 13px; }
+  @media(max-width:480px) {
+    .tx-table-header { grid-template-columns: 1fr 80px 80px 44px; font-size: 10px; padding: 6px 8px; }
+    .tx-row { grid-template-columns: 1fr 80px 80px 44px; padding: 8px; }
+    .tx-col-in, .tx-col-out { font-size: 12px; }
+  }
 
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity .2s; padding: 16px; }
@@ -834,29 +848,55 @@ function renderExpense() {
   document.getElementById('exp-cat-breakdown').innerHTML = catEntries.length
     ? catEntries.map(([cat,amt])=>`<div class="cat-chip"><span>${cat}</span><span class="cat-chip-amount">${fmtMoney(amt)}</span></div>`).join('') : '';
 
-  // Transaction list grouped by date
+  // Transaction list grouped by date — 2 column layout
   const list = document.getElementById('exp-list');
   if (!expenses.length) { list.innerHTML='<div class="empty-exp">📭 Chưa có giao dịch nào<br>Nhấn "+ Tiền tổng" để bắt đầu</div>'; return; }
+
+  // Table header
+  let html = `
+    <div class="tx-table-header">
+      <div class="tx-col-desc">Nội dung</div>
+      <div class="tx-col-in">💚 Nhận</div>
+      <div class="tx-col-out">🔴 Chi</div>
+      <div class="tx-col-action"></div>
+    </div>`;
+
   const grouped = {};
   [...expenses].reverse().forEach(e=>{ if(!grouped[e.date])grouped[e.date]=[]; grouped[e.date].push(e); });
-  list.innerHTML = Object.entries(grouped).sort((a,b)=>b[0].localeCompare(a[0])).map(([date,txs])=>`
-    <div class="tx-date-group">${fmtDate(date)}</div>
-    ${txs.map(e=>`
-      <div class="exp-item ${e.type==='income'?'income-item':''}">
-        <div class="exp-cat-icon">${(e.cat||'💡').split(' ')[0]}</div>
-        <div style="flex:1">
-          <div class="exp-item-name">${e.name}</div>
-          <div class="exp-item-note">${e.type==='income'?'Thu nhập':e.cat}${e.note?' · '+e.note:''}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="exp-item-amount" style="color:${e.type==='income'?'var(--success)':'var(--danger)'}">${e.type==='income'?'+':'−'}${fmtMoney(e.amount)}</div>
-          <div class="exp-item-time">${e.time||''}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:2px">
-          <button class="btn-icon" onclick="openExpenseModal(${e.id})">✏️</button>
-          <button class="btn-icon" onclick="deleteExpense(${e.id})">🗑</button>
-        </div>
-      </div>`).join('')}`).join('');
+
+  Object.entries(grouped).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([date,txs])=>{
+    // Day subtotal
+    const dayIn  = txs.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+    const dayOut = txs.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+    html += `<div class="tx-date-group">
+      <span>${fmtDate(date)}</span>
+      <span style="margin-left:auto;display:flex;gap:16px;font-size:11px">
+        ${dayIn>0?`<span style="color:var(--success)">+${fmtMoney(dayIn)}</span>`:''}
+        ${dayOut>0?`<span style="color:var(--danger)">−${fmtMoney(dayOut)}</span>`:''}
+      </span>
+    </div>`;
+    txs.forEach(e=>{
+      const isIncome = e.type==='income';
+      html += `
+        <div class="tx-row ${isIncome?'tx-row-income':'tx-row-expense'}">
+          <div class="tx-col-desc">
+            <div class="exp-cat-icon" style="width:28px;height:28px;font-size:14px;margin-right:8px;flex-shrink:0">${(e.cat||'💡').split(' ')[0]}</div>
+            <div>
+              <div class="exp-item-name">${e.name}</div>
+              <div class="exp-item-note">${isIncome?'Thu nhập':e.cat}${e.note?' · '+e.note:''} · ${e.time||''}</div>
+            </div>
+          </div>
+          <div class="tx-col-in">${isIncome?`<span class="tx-amount-in">+${fmtMoney(e.amount)}</span>`:'<span class="tx-empty">—</span>'}</div>
+          <div class="tx-col-out">${!isIncome?`<span class="tx-amount-out">−${fmtMoney(e.amount)}</span>`:'<span class="tx-empty">—</span>'}</div>
+          <div class="tx-col-action">
+            <button class="btn-icon" onclick="openExpenseModal(${e.id})">✏️</button>
+            <button class="btn-icon" onclick="deleteExpense(${e.id})">🗑</button>
+          </div>
+        </div>`;
+    });
+  });
+
+  list.innerHTML = html;
 }
 
 // INIT
