@@ -143,28 +143,30 @@
   .notes-empty, .empty-study { text-align: center; padding: 44px 20px; color: var(--text-muted); }
   .empty-study .emoji { font-size: 40px; margin-bottom: 9px; }
 
+  /* WALLET */
+  .wallet-card { background: linear-gradient(135deg, #1e3a6e 0%, #1a2235 100%); border: 1px solid #2a4a8a; border-radius: 18px; padding: 20px; margin-bottom: 16px; }
+  .wallet-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .wallet-label { font-size: 11px; color: #7a9fd4; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .5px; }
+  .wallet-balance { font-size: 32px; font-weight: 700; color: #fff; }
+  .wallet-bar-wrap { background: rgba(255,255,255,.1); border-radius: 99px; height: 5px; margin-bottom: 14px; overflow: hidden; }
+  .wallet-bar-fill { height: 100%; border-radius: 99px; background: var(--success); transition: width .5s, background .3s; }
+  .wallet-stats { display: flex; justify-content: space-between; }
+  .wallet-stat-label { font-size: 11px; color: #7a9fd4; margin-bottom: 3px; }
+  .wallet-stat-val { font-size: 14px; font-weight: 700; }
+
   /* EXPENSE */
-  .budget-bar-wrap { background: var(--surface2); border-radius: 99px; height: 8px; margin: 9px 0 4px; overflow: hidden; }
-  .budget-bar-fill { height: 100%; border-radius: 99px; transition: width .5s, background .3s; }
-  .exp-summary { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
-  .exp-summary-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px; }
-  .exp-big { font-size: 26px; font-weight: 700; }
-  .exp-sublabel { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
-  .exp-remain { font-size: 13px; font-weight: 600; }
   .exp-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
-  .exp-cat-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; background: var(--surface2); }
+  .exp-cat-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; background: var(--surface2); }
   .exp-item-name { font-size: 14px; font-weight: 600; }
   .exp-item-note { font-size: 11px; color: var(--text-muted); }
-  .exp-item-amount { font-size: 15px; font-weight: 700; color: var(--danger); margin-left: auto; flex-shrink: 0; }
+  .exp-item-amount { font-size: 15px; font-weight: 700; margin-left: auto; flex-shrink: 0; }
   .exp-item-time { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
-  .date-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-  .date-nav-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 6px 13px; cursor: pointer; font-size: 15px; font-family: var(--font-main); transition: border-color .15s; }
-  .date-nav-btn:hover { border-color: var(--accent); }
-  .date-label { flex: 1; text-align: center; font-weight: 600; font-size: 14px; }
+  .income-item { border-color: rgba(52,211,153,.25); background: rgba(52,211,153,.04); }
   .cat-breakdown { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
   .cat-chip { padding: 5px 11px; border-radius: 99px; font-size: 12px; font-weight: 600; background: var(--surface); border: 1.5px solid var(--border); color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
   .cat-chip-amount { color: var(--danger); }
   .empty-exp { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
+  .tx-date-group { font-size: 11px; font-weight: 600; color: var(--text-muted); padding: 10px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
 
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity .2s; padding: 16px; }
@@ -308,33 +310,21 @@
 
 <!-- ===== EXPENSE PAGE ===== -->
 <div class="page" id="page-expense">
-  <!-- Date nav -->
-  <div class="date-nav">
-    <button class="date-nav-btn" onclick="changeDay(-1)">‹</button>
-    <div class="date-label" id="exp-date-label"></div>
-    <button class="date-nav-btn" onclick="changeDay(1)">›</button>
-    <button class="btn btn-ghost" style="font-size:12px;padding:6px 10px" onclick="goToday()">Hôm nay</button>
-  </div>
 
-  <!-- Summary -->
-  <div class="exp-summary">
-    <div class="exp-summary-row">
+  <!-- Ví tiền -->
+  <div class="wallet-card">
+    <div class="wallet-top">
       <div>
-        <div class="exp-sublabel">Đã chi hôm nay</div>
-        <div class="exp-big" id="exp-total">0 ₫</div>
+        <div class="wallet-label">Số dư hiện tại</div>
+        <div class="wallet-balance" id="wallet-balance">0 ₫</div>
       </div>
-      <div style="text-align:right">
-        <div class="exp-sublabel">Ngân sách ngày</div>
-        <div style="display:flex;align-items:center;gap:5px;justify-content:flex-end">
-          <div class="exp-remain" id="exp-remain">—</div>
-          <button class="btn-icon" onclick="openBudgetModal()" title="Đặt ngân sách">⚙️</button>
-        </div>
-      </div>
+      <button class="btn btn-primary" onclick="openAddMoney()">+ Tiền tổng</button>
     </div>
-    <div class="budget-bar-wrap"><div class="budget-bar-fill" id="budget-bar" style="width:0%;background:var(--success)"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">
-      <span id="exp-pct"></span>
-      <span id="exp-budget-label"></span>
+    <div class="wallet-bar-wrap"><div class="wallet-bar-fill" id="wallet-bar" style="width:100%"></div></div>
+    <div class="wallet-stats">
+      <div><div class="wallet-stat-label">Tổng nhận</div><div class="wallet-stat-val" id="wallet-in" style="color:var(--success)">0 ₫</div></div>
+      <div style="text-align:center"><div class="wallet-stat-label">Đã tiêu</div><div class="wallet-stat-val" id="wallet-out" style="color:var(--danger)">0 ₫</div></div>
+      <div style="text-align:right"><div class="wallet-stat-label">Tiết kiệm</div><div class="wallet-stat-val" id="wallet-pct" style="color:var(--accent)">—</div></div>
     </div>
   </div>
 
@@ -342,9 +332,9 @@
   <div class="cat-breakdown" id="exp-cat-breakdown"></div>
 
   <!-- List header -->
-  <div class="section-header">
-    <span style="font-size:13px;font-weight:600;color:var(--text-muted)">Khoản chi trong ngày</span>
-    <button class="btn btn-primary" onclick="openExpenseModal()">+ Thêm</button>
+  <div class="section-header" style="margin-top:4px">
+    <span style="font-size:13px;font-weight:600;color:var(--text-muted)">Lịch sử giao dịch</span>
+    <button class="btn btn-primary" onclick="openExpenseModal()">− Ghi chi tiêu</button>
   </div>
 
   <div id="exp-list"></div>
@@ -404,9 +394,21 @@ fluent | thành thạo</div>
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-add-money">
+  <div class="modal">
+    <div class="modal-title">💰 Bố cho tiền</div>
+    <div class="field"><label>Số tiền nhận được (₫)</label><input id="income-amount" type="number" placeholder="VD: 500000" min="0"></div>
+    <div class="field"><label>Ghi chú (tùy chọn)</label><input id="income-note" placeholder="VD: tiền ăn tuần này..."></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-money')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveIncome()">Lưu</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-expense">
   <div class="modal">
-    <div class="modal-title" id="modal-exp-title">Thêm khoản chi</div>
+    <div class="modal-title" id="modal-exp-title">Ghi khoản chi</div>
     <div class="field"><label>Tên khoản chi</label><input id="exp-name" placeholder="VD: Cơm trưa, Xăng xe..."></div>
     <div class="field"><label>Số tiền (₫)</label><input id="exp-amount" type="number" placeholder="VD: 35000" min="0"></div>
     <div class="field">
@@ -430,17 +432,6 @@ fluent | thành thạo</div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-budget">
-  <div class="modal">
-    <div class="modal-title">⚙️ Ngân sách hàng ngày</div>
-    <div class="field"><label>Ngân sách mỗi ngày (₫)</label><input id="budget-input" type="number" placeholder="VD: 200000" min="0"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-budget')">Hủy</button>
-      <button class="btn btn-primary" onclick="saveBudget()">Lưu</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -451,8 +442,7 @@ const S = { get: k => JSON.parse(localStorage.getItem(k)||'null'), set: (k,v) =>
 let decks = S.get('ss_decks') || [];
 let notes = S.get('ss_notes') || [];
 let expenses = S.get('ss_expenses') || [];
-let budget = S.get('ss_budget') || 0;
-let activeNoteId = null, activeDeckId = null, editingCardId = null, editingExpId = null;
+let activeNoteId = null, activeDeckId = null, editingCardId = null;
 let currentMode = 'flash';
 let flashQueue=[], flashIdx=0, flashKnown=0, cardFlipped=false;
 let quizQueue=[], quizIdx=0, quizScore=0, quizAnswered=false;
@@ -770,106 +760,103 @@ function newNote(){const note={id:Date.now(),title:'',body:'',updated:Date.now()
 function saveNote(){const note=notes.find(n=>n.id===activeNoteId);if(!note)return;note.title=document.getElementById('note-title').value;note.body=document.getElementById('note-body').value;note.updated=Date.now();saveNotes();renderNotesList();}
 function deleteNote(){if(!confirm('Xóa ghi chú này?'))return;notes=notes.filter(n=>n.id!==activeNoteId);saveNotes();activeNoteId=null;document.getElementById('notes-editor').style.display='none';document.getElementById('notes-empty').style.display='';renderNotesList();toast('Đã xóa ghi chú');}
 
-// ===== EXPENSE =====
-function changeDay(d){
-  const dt=new Date(expDate+'T00:00:00');
-  dt.setDate(dt.getDate()+d);
-  expDate=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
-  renderExpense();
-}
-function goToday(){expDate=todayStr();renderExpense();}
+// ===== WALLET / EXPENSE =====
+let editingExpId = null;
 
-function openBudgetModal(){
-  document.getElementById('budget-input').value=budget||'';
-  openModal('modal-budget');
+function nowTimeStr() { return new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}); }
+
+function openAddMoney() {
+  document.getElementById('income-amount').value='';
+  document.getElementById('income-note').value='';
+  openModal('modal-add-money');
 }
-function saveBudget(){
-  budget=parseInt(document.getElementById('budget-input').value)||0;
-  S.set('ss_budget',budget); closeModal('modal-budget'); renderExpense(); toast('Đã lưu ngân sách');
+function saveIncome() {
+  const amount = parseInt(document.getElementById('income-amount').value)||0;
+  if (!amount) { toast('Vui lòng nhập số tiền'); return; }
+  expenses.push({ id: Date.now(), type:'income', name:'Bố cho tiền', amount, cat:'💰 Thu nhập', note: document.getElementById('income-note').value.trim(), date: todayStr(), time: nowTimeStr() });
+  saveExpenses(); closeModal('modal-add-money'); renderExpense(); toast('Đã cộng '+fmtMoney(amount)+' vào ví ✓');
 }
 
-function openExpenseModal(id){
-  editingExpId=id||null;
-  if(id){
-    const exp=expenses.find(e=>e.id===id);
-    document.getElementById('modal-exp-title').textContent='Sửa khoản chi';
-    document.getElementById('exp-name').value=exp.name;
-    document.getElementById('exp-amount').value=exp.amount;
-    document.getElementById('exp-cat').value=exp.cat;
-    document.getElementById('exp-note').value=exp.note||'';
+function openExpenseModal(id) {
+  editingExpId = id||null;
+  if (id) {
+    const exp = expenses.find(e=>e.id===id);
+    document.getElementById('modal-exp-title').textContent = 'Sửa giao dịch';
+    document.getElementById('exp-name').value = exp.name;
+    document.getElementById('exp-amount').value = exp.amount;
+    document.getElementById('exp-cat').value = exp.cat||'🍜 Ăn uống';
+    document.getElementById('exp-note').value = exp.note||'';
   } else {
-    document.getElementById('modal-exp-title').textContent='Thêm khoản chi';
+    document.getElementById('modal-exp-title').textContent = 'Ghi khoản chi';
     ['exp-name','exp-note'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('exp-amount').value='';
     document.getElementById('exp-cat').value='🍜 Ăn uống';
   }
   openModal('modal-expense');
 }
-function saveExpense(){
-  const name=document.getElementById('exp-name').value.trim();
-  const amount=parseInt(document.getElementById('exp-amount').value)||0;
-  if(!name||!amount){toast('Vui lòng nhập tên và số tiền');return;}
-  const data={name,amount,cat:document.getElementById('exp-cat').value,note:document.getElementById('exp-note').value.trim(),date:expDate,time:new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})};
-  if(editingExpId){const idx=expenses.findIndex(e=>e.id===editingExpId);expenses[idx]={...expenses[idx],...data};toast('Đã cập nhật');}
-  else{expenses.push({id:Date.now(),...data});toast('Đã thêm khoản chi');}
+function saveExpense() {
+  const name = document.getElementById('exp-name').value.trim();
+  const amount = parseInt(document.getElementById('exp-amount').value)||0;
+  if (!name||!amount) { toast('Vui lòng nhập tên và số tiền'); return; }
+  const data = { name, amount, cat: document.getElementById('exp-cat').value, note: document.getElementById('exp-note').value.trim(), date: todayStr(), time: nowTimeStr(), type:'expense' };
+  if (editingExpId) {
+    const idx = expenses.findIndex(e=>e.id===editingExpId);
+    expenses[idx] = { ...expenses[idx], ...data }; toast('Đã cập nhật');
+  } else {
+    expenses.push({ id: Date.now(), ...data }); toast('Đã ghi chi tiêu');
+  }
   saveExpenses(); closeModal('modal-expense'); renderExpense();
 }
-function deleteExpense(id){
-  if(!confirm('Xóa khoản chi này?'))return;
-  expenses=expenses.filter(e=>e.id!==id); saveExpenses(); renderExpense(); toast('Đã xóa');
+function deleteExpense(id) {
+  if (!confirm('Xóa giao dịch này?')) return;
+  expenses = expenses.filter(e=>e.id!==id); saveExpenses(); renderExpense(); toast('Đã xóa');
 }
 
-function renderExpense(){
-  document.getElementById('exp-date-label').textContent=fmtDate(expDate);
-  const dayExp=expenses.filter(e=>e.date===expDate);
-  const total=dayExp.reduce((s,e)=>s+e.amount,0);
+function renderExpense() {
+  const totalIn  = expenses.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const totalOut = expenses.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  const balance  = totalIn - totalOut;
 
-  // Summary
-  document.getElementById('exp-total').textContent=fmtMoney(total);
-  if(budget>0){
-    const remain=budget-total; const pct=Math.min(100,Math.round(total/budget*100));
-    const color=pct>=100?'var(--danger)':pct>=80?'var(--warn)':'var(--success)';
-    document.getElementById('exp-remain').textContent=(remain>=0?'Còn lại: '+fmtMoney(remain):'Vượt: '+fmtMoney(-remain));
-    document.getElementById('exp-remain').style.color=remain>=0?(pct>=80?'var(--warn)':'var(--success)'):'var(--danger)';
-    document.getElementById('budget-bar').style.width=pct+'%';
-    document.getElementById('budget-bar').style.background=color;
-    document.getElementById('exp-pct').textContent=pct+'% ngân sách';
-    document.getElementById('exp-budget-label').textContent='NS: '+fmtMoney(budget);
-  } else {
-    document.getElementById('exp-remain').textContent='Chưa đặt ngân sách';
-    document.getElementById('exp-remain').style.color='var(--text-muted)';
-    document.getElementById('budget-bar').style.width='0%';
-    document.getElementById('exp-pct').textContent='';
-    document.getElementById('exp-budget-label').textContent='';
-  }
+  document.getElementById('wallet-balance').textContent = fmtMoney(balance);
+  document.getElementById('wallet-balance').style.color = balance < 0 ? 'var(--danger)' : '#fff';
+  document.getElementById('wallet-in').textContent  = fmtMoney(totalIn);
+  document.getElementById('wallet-out').textContent = fmtMoney(totalOut);
+  document.getElementById('wallet-pct').textContent = totalIn > 0 ? Math.round(balance/totalIn*100)+'%' : '—';
+  const barPct = totalIn > 0 ? Math.max(0, Math.min(100, Math.round(balance/totalIn*100))) : 0;
+  const bar = document.getElementById('wallet-bar');
+  bar.style.width = barPct+'%';
+  bar.style.background = barPct>50?'var(--success)':barPct>20?'var(--warn)':'var(--danger)';
 
   // Category breakdown
-  const cats={};
-  dayExp.forEach(e=>{if(!cats[e.cat])cats[e.cat]=0;cats[e.cat]+=e.amount;});
-  const catEntries=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('exp-cat-breakdown').innerHTML=catEntries.length
-    ? catEntries.map(([cat,amt])=>`<div class="cat-chip"><span>${cat}</span><span class="cat-chip-amount">${fmtMoney(amt)}</span></div>`).join('')
-    : '';
+  const cats = {};
+  expenses.filter(e=>e.type==='expense').forEach(e=>{ if(!cats[e.cat])cats[e.cat]=0; cats[e.cat]+=e.amount; });
+  const catEntries = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('exp-cat-breakdown').innerHTML = catEntries.length
+    ? catEntries.map(([cat,amt])=>`<div class="cat-chip"><span>${cat}</span><span class="cat-chip-amount">${fmtMoney(amt)}</span></div>`).join('') : '';
 
-  // List
-  const list=document.getElementById('exp-list');
-  if(!dayExp.length){list.innerHTML='<div class="empty-exp">🎉 Chưa có khoản chi nào hôm nay</div>';return;}
-  list.innerHTML=[...dayExp].reverse().map(e=>`
-    <div class="exp-item">
-      <div class="exp-cat-icon">${e.cat.split(' ')[0]}</div>
-      <div style="flex:1">
-        <div class="exp-item-name">${e.name}</div>
-        <div class="exp-item-note">${e.cat}${e.note?' · '+e.note:''}</div>
-      </div>
-      <div style="text-align:right">
-        <div class="exp-item-amount">${fmtMoney(e.amount)}</div>
-        <div class="exp-item-time">${e.time||''}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:2px">
-        <button class="btn-icon" onclick="openExpenseModal(${e.id})">✏️</button>
-        <button class="btn-icon" onclick="deleteExpense(${e.id})">🗑</button>
-      </div>
-    </div>`).join('');
+  // Transaction list grouped by date
+  const list = document.getElementById('exp-list');
+  if (!expenses.length) { list.innerHTML='<div class="empty-exp">📭 Chưa có giao dịch nào<br>Nhấn "+ Bố cho tiền" để bắt đầu</div>'; return; }
+  const grouped = {};
+  [...expenses].reverse().forEach(e=>{ if(!grouped[e.date])grouped[e.date]=[]; grouped[e.date].push(e); });
+  list.innerHTML = Object.entries(grouped).sort((a,b)=>b[0].localeCompare(a[0])).map(([date,txs])=>`
+    <div class="tx-date-group">${fmtDate(date)}</div>
+    ${txs.map(e=>`
+      <div class="exp-item ${e.type==='income'?'income-item':''}">
+        <div class="exp-cat-icon">${(e.cat||'💡').split(' ')[0]}</div>
+        <div style="flex:1">
+          <div class="exp-item-name">${e.name}</div>
+          <div class="exp-item-note">${e.type==='income'?'Thu nhập':e.cat}${e.note?' · '+e.note:''}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="exp-item-amount" style="color:${e.type==='income'?'var(--success)':'var(--danger)'}">${e.type==='income'?'+':'−'}${fmtMoney(e.amount)}</div>
+          <div class="exp-item-time">${e.time||''}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <button class="btn-icon" onclick="openExpenseModal(${e.id})">✏️</button>
+          <button class="btn-icon" onclick="deleteExpense(${e.id})">🗑</button>
+        </div>
+      </div>`).join('')}`).join('');
 }
 
 // INIT
