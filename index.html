@@ -396,7 +396,7 @@ fluent | thành thạo</div>
 
 <div class="modal-overlay" id="modal-add-money">
   <div class="modal">
-    <div class="modal-title">💰 Bố cho tiền</div>
+    <div class="modal-title">💰 Tiền tổng</div>
     <div class="field"><label>Số tiền nhận được (₫)</label><input id="income-amount" type="number" placeholder="VD: 500000" min="0"></div>
     <div class="field"><label>Ghi chú (tùy chọn)</label><input id="income-note" placeholder="VD: tiền ăn tuần này..."></div>
     <div class="modal-actions">
@@ -773,7 +773,7 @@ function openAddMoney() {
 function saveIncome() {
   const amount = parseInt(document.getElementById('income-amount').value)||0;
   if (!amount) { toast('Vui lòng nhập số tiền'); return; }
-  expenses.push({ id: Date.now(), type:'income', name:'Bố cho tiền', amount, cat:'💰 Thu nhập', note: document.getElementById('income-note').value.trim(), date: todayStr(), time: nowTimeStr() });
+  expenses.push({ id: Date.now(), type:'income', name:'Tiền tổng', amount, cat:'💰 Thu nhập', note: document.getElementById('income-note').value.trim(), date: todayStr(), time: nowTimeStr() });
   saveExpenses(); closeModal('modal-add-money'); renderExpense(); toast('Đã cộng '+fmtMoney(amount)+' vào ví ✓');
 }
 
@@ -836,7 +836,7 @@ function renderExpense() {
 
   // Transaction list grouped by date
   const list = document.getElementById('exp-list');
-  if (!expenses.length) { list.innerHTML='<div class="empty-exp">📭 Chưa có giao dịch nào<br>Nhấn "+ Bố cho tiền" để bắt đầu</div>'; return; }
+  if (!expenses.length) { list.innerHTML='<div class="empty-exp">📭 Chưa có giao dịch nào<br>Nhấn "+ Tiền tổng" để bắt đầu</div>'; return; }
   const grouped = {};
   [...expenses].reverse().forEach(e=>{ if(!grouped[e.date])grouped[e.date]=[]; grouped[e.date].push(e); });
   list.innerHTML = Object.entries(grouped).sort((a,b)=>b[0].localeCompare(a[0])).map(([date,txs])=>`
