@@ -185,9 +185,9 @@
 
 <nav>
   <span class="nav-logo">✦ StudySpace</span>
-  <button class="nav-tab active" onclick="switchPage('flash',this)">Flashcard</button>
-  <button class="nav-tab" onclick="switchPage('notes',this)">Ghi chú</button>
-  <button class="nav-tab" onclick="switchPage('expense',this)">Chi tiêu</button>
+  <button class="nav-tab active" id="nav-flash" onclick="switchPage('flash')">Flashcard</button>
+  <button class="nav-tab" id="nav-notes" onclick="switchPage('notes')">Ghi chú</button>
+  <button class="nav-tab" id="nav-expense" onclick="switchPage('expense')">Chi tiêu</button>
 </nav>
 
 <!-- ===== FLASHCARD PAGE ===== -->
@@ -483,11 +483,11 @@ function saveNotes() { S.set('ss_notes', notes); }
 function saveExpenses() { S.set('ss_expenses', expenses); }
 
 // NAV
-function switchPage(p, btn) {
+function switchPage(p) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
-  btn.classList.add('active');
+  document.getElementById('nav-'+p).classList.add('active');
   if (p === 'notes') renderNotesList();
   if (p === 'expense') renderExpense();
 }
@@ -691,7 +691,7 @@ function showFlashCard() {
   cardFlipped=false;
   document.getElementById('flip-inner').classList.remove('flipped');
   const wEl=document.getElementById('card-front-word'); wEl.textContent=c.word; wEl.className='card-word'+(isJp?' jp':'');
-  document.getElementById('card-front-reading').textContent=isJp?(c.reading||'):'';
+  document.getElementById('card-front-reading').textContent=isJp?(c.reading||''):'';
   document.getElementById('card-back-meaning').textContent=c.meaning;
   const eEl=document.getElementById('card-back-example'); eEl.textContent=c.example||''; eEl.className='card-example'+(isJp?' jp':'');
   document.getElementById('flash-actions').style.display='none';
@@ -724,7 +724,7 @@ function showQuizQuestion() {
   const deck=decks.find(d=>d.id===activeDeckId);
   const isJp=deck.lang==='jp'; const c=quizQueue[quizIdx]; quizAnswered=false;
   const wEl=document.getElementById('quiz-word'); wEl.textContent=c.word; wEl.className='quiz-q-word'+(isJp?' jp':'');
-  document.getElementById('quiz-reading').textContent=isJp?(c.reading||'):'';
+  document.getElementById('quiz-reading').textContent=isJp?(c.reading||''):'';
   document.getElementById('quiz-feedback').textContent=''; document.getElementById('quiz-feedback').style.color='';
   document.getElementById('quiz-next').style.display='none';
   const others=deck.cards.filter(x=>x.id!==c.id).sort(()=>Math.random()-.5).slice(0,3);
